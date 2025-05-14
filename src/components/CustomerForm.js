@@ -30,17 +30,19 @@ export const CustomerForm = ({ onAddCustomer }) => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
+              placeholder="Customer name"
             />
           </div>
-          {/* <div className="form-group">
+          <div className="form-group">
             <label>Email</label>
             <input
               type="email"
               className="form-control"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="customer@example.com"
             />
-          </div> */}
+          </div>
           <div className="form-group">
             <label>Phone</label>
             <input
@@ -48,6 +50,7 @@ export const CustomerForm = ({ onAddCustomer }) => {
               className="form-control"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
+              placeholder="Phone number"
             />
           </div>
           <div className="form-group">
@@ -57,9 +60,10 @@ export const CustomerForm = ({ onAddCustomer }) => {
               className="form-control"
               value={subregion}
               onChange={(e) => setSubregion(e.target.value)}
+              placeholder="Subregion name"
             />
           </div>
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className="btn btn-primary btn-block">
             Add Customer
           </button>
         </form>

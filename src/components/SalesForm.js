@@ -14,9 +14,6 @@ export const SalesForm = ({ customers, onAddSale }) => {
 
   return (
     <div className="card">
-      <div className="card-header">
-        <h3>Record Sale</h3>
-      </div>
       <div className="card-body">
         <form onSubmit={handleSubmit}>
           <div className="form-group">
@@ -44,6 +41,7 @@ export const SalesForm = ({ customers, onAddSale }) => {
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               required
+              placeholder="0.00"
             />
           </div>
           <div className="form-group">
@@ -56,7 +54,7 @@ export const SalesForm = ({ customers, onAddSale }) => {
               required
             />
           </div>
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className="btn btn-primary btn-block">
             Record Sale
           </button>
         </form>

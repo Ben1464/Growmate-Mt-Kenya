@@ -8,12 +8,12 @@ export const CustomersPage = () => {
 
   return (
     <div>
-      <h1>Customer Management</h1>
+      <h1 className="page-title">Customer Management</h1>
       <div className="row">
-        <div className="col-md-6">
+        <div className="col-12 col-md-6 mb-3">
           <CustomerForm onAddCustomer={addCustomer} />
         </div>
-        <div className="col-md-6">
+        <div className="col-12 col-md-6">
           <CustomerList customers={customers} onDeleteCustomer={deleteCustomer} />
         </div>
       </div>

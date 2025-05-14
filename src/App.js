@@ -1,27 +1,26 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { CustomersPage } from './pages/CustomersPage';
 import { SubregionsPage } from './pages/SubregionsPage';
 import { SalesPage } from './pages/SalesPage';
 import { TargetsPage } from './pages/TargetsPage';
-import { Navbar } from './components/Navbar';
+import { MobileNav } from './components/MobileNav';
 import './App.css';
 
 function App() {
   return (
     <Router>
-      <div className="app">
-        <Navbar />
-        <main className="container">
+      <div className="app-container">
+        <div className="app-content">
           <Routes>
-            <Route path="/" element={<Navigate to="/customers" replace />} />
+            <Route path="/" element={<CustomersPage />} />
             <Route path="/customers" element={<CustomersPage />} />
             <Route path="/subregions" element={<SubregionsPage />} />
             <Route path="/sales" element={<SalesPage />} />
             <Route path="/targets" element={<TargetsPage />} />
-            <Route path="*" element={<div>Page Not Found</div>} />
           </Routes>
-        </main>
+        </div>
+        <MobileNav />
       </div>
     </Router>
   );
