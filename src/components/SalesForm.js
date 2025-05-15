@@ -5,11 +5,31 @@ export const SalesForm = ({ customers, onAddSale }) => {
   const [customerId, setCustomerId] = useState('');
   const [amount, setAmount] = useState('');
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'));
+  const [submissionStatus, setSubmissionStatus] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onAddSale({ customerId, amount: parseFloat(amount), date });
+    
+    if (!customerId || !amount || !date) {
+      setSubmissionStatus('error');
+      return;
+    }
+
+    onAddSale({
+      customerId,
+      amount: parseFloat(amount),
+      date,
+      id: Date.now().toString() // Generate unique ID
+    });
+
+    // Reset form
+    setCustomerId('');
     setAmount('');
+    setDate(format(new Date(), 'yyyy-MM-dd'));
+    setSubmissionStatus('success');
+    
+    // Clear success message after 3 seconds
+    setTimeout(() => setSubmissionStatus(null), 3000);
   };
 
   return (
@@ -17,7 +37,7 @@ export const SalesForm = ({ customers, onAddSale }) => {
       <div className="card-body">
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Customer</label>
+            <label>Customer *</label>
             <select
               className="form-control"
               value={customerId}
@@ -33,19 +53,23 @@ export const SalesForm = ({ customers, onAddSale }) => {
             </select>
           </div>
           <div className="form-group">
-            <label>Amount</label>
-            <input
-              type="number"
-              step="0.01"
-              className="form-control"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              required
-              placeholder="0.00"
-            />
+            <label>Amount *</label>
+            <div className="input-group">
+              <span className="input-group-text">$</span>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                className="form-control"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                required
+                placeholder="0.00"
+              />
+            </div>
           </div>
           <div className="form-group">
-            <label>Date</label>
+            <label>Date *</label>
             <input
               type="date"
               className="form-control"
@@ -54,7 +78,20 @@ export const SalesForm = ({ customers, onAddSale }) => {
               required
             />
           </div>
-          <button type="submit" className="btn btn-primary btn-block">
+          
+          {submissionStatus === 'success' && (
+            <div className="alert alert-success mt-3">
+              Sale recorded successfully!
+            </div>
+          )}
+          
+          {submissionStatus === 'error' && (
+            <div className="alert alert-danger mt-3">
+              Please fill all required fields correctly.
+            </div>
+          )}
+          
+          <button type="submit" className="btn btn-primary btn-block mt-3">
             Record Sale
           </button>
         </form>

@@ -6,7 +6,7 @@ import { FaPlus, FaChartBar } from 'react-icons/fa';
 
 export const SalesPage = () => {
   const [activeTab, setActiveTab] = useState('record');
-  const { customers } = useAppStore();
+  const { customers, sales, addSale } = useAppStore();
 
   return (
     <div>
@@ -34,9 +34,9 @@ export const SalesPage = () => {
       </div>
       
       {activeTab === 'record' ? (
-        <SalesForm customers={customers} />
+        <SalesForm customers={customers} onAddSale={addSale} />
       ) : (
-        <SalesReport />
+        <SalesReport sales={sales} customers={customers} />
       )}
     </div>
   );
