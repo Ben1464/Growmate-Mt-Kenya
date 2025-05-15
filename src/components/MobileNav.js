@@ -13,7 +13,7 @@ export const MobileNav = () => {
     <nav className="mobile-nav">
       <Link 
         to="/dashboard" 
-        className={`nav-item ${isActive('/dashboard') || isActive('/') ? 'active' : ''}`}
+        className={`nav-item ${isActive('/dashboard') ? 'active' : ''}`}
       >
         <FaHome className="nav-icon" />
         <span>Dashboard</span>

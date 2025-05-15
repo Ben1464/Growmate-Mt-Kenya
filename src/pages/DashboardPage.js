@@ -1,25 +1,28 @@
 import React from 'react';
 import { useAppStore } from '../store';
 import { useNavigate } from 'react-router-dom';
-import { FaUsers, FaChartLine, FaMapMarkedAlt } from 'react-icons/fa';
-import { format, subMonths } from 'date-fns';
+import { FaUsers, FaChartLine, FaMapMarkedAlt, FaDollarSign } from 'react-icons/fa';
+import { format, subMonths, startOfYear, isThisYear } from 'date-fns';
 
 export const DashboardPage = () => {
-  const { sales, customers, subregions } = useAppStore();
+  const { sales, customers, subregions, getSubregionSales } = useAppStore();
   const navigate = useNavigate();
 
   // Calculate YTD sales
   const currentYear = new Date().getFullYear();
   const ytdSales = sales
-    .filter(sale => new Date(sale.date).getFullYear() === currentYear)
+    .filter(sale => {
+      const saleDate = new Date(sale.date);
+      return isThisYear(saleDate);
+    })
     .reduce((sum, sale) => sum + sale.amount, 0);
 
   // Calculate current month sales
-  const currentMonth = new Date().getMonth();
+  const currentMonth = format(new Date(), 'MMMM');
   const currentMonthSales = sales
     .filter(sale => {
       const saleDate = new Date(sale.date);
-      return saleDate.getFullYear() === currentYear && saleDate.getMonth() === currentMonth;
+      return format(saleDate, 'MMMM yyyy') === format(new Date(), 'MMMM yyyy');
     })
     .reduce((sum, sale) => sum + sale.amount, 0);
 
@@ -27,17 +30,28 @@ export const DashboardPage = () => {
   const previousMonthSales = sales
     .filter(sale => {
       const saleDate = new Date(sale.date);
-      const prevMonthDate = subMonths(new Date(), 1);
-      return (
-        saleDate.getFullYear() === prevMonthDate.getFullYear() &&
-        saleDate.getMonth() === prevMonthDate.getMonth()
-      );
+      return format(saleDate, 'MMMM yyyy') === format(subMonths(new Date(), 1), 'MMMM yyyy');
     })
     .reduce((sum, sale) => sum + sale.amount, 0);
 
   const momGrowth = previousMonthSales
     ? ((currentMonthSales - previousMonthSales) / previousMonthSales) * 100
     : 0;
+
+  // Get top performing subregion
+  const subregionPerformance = subregions.map(subregion => {
+    const subregionSales = getSubregionSales(subregion.id);
+    const currentMonthSubregionSales = subregionSales
+      .filter(sale => format(new Date(sale.date), 'MMMM yyyy') === format(new Date(), 'MMMM yyyy'))
+      .reduce((sum, sale) => sum + sale.amount, 0);
+    
+    return {
+      name: subregion.name,
+      sales: currentMonthSubregionSales
+    };
+  }).sort((a, b) => b.sales - a.sales);
+
+  const topSubregion = subregionPerformance[0]?.name || 'N/A';
 
   return (
     <div className="dashboard">
@@ -47,17 +61,22 @@ export const DashboardPage = () => {
         {/* Overview Card */}
         <div className="dashboard-card overview-card">
           <div className="card-content">
-            <h3>Sales Overview</h3>
+            <div className="card-header">
+              <FaUsers className="card-icon" />
+              <h3>Business Overview</h3>
+            </div>
             <div className="metrics-grid">
               <div className="metric-item">
-                <FaUsers className="metric-icon" />
                 <span className="metric-value">{customers.length}</span>
-                <span className="metric-label">Customers</span>
+                <span className="metric-label">Total Customers</span>
               </div>
               <div className="metric-item">
-                <FaMapMarkedAlt className="metric-icon" />
                 <span className="metric-value">{subregions.length}</span>
                 <span className="metric-label">Subregions</span>
+              </div>
+              <div className="metric-item">
+                <span className="metric-value">{topSubregion}</span>
+                <span className="metric-label">Top Subregion</span>
               </div>
             </div>
           </div>
@@ -69,12 +88,14 @@ export const DashboardPage = () => {
           onClick={() => navigate('/sales')}
         >
           <div className="card-content">
-            <h3>Year to Date Sales</h3>
+            <div className="card-header">
+              <FaChartLine className="card-icon" />
+              <h3>Year to Date</h3>
+            </div>
             <div className="metric-value">${ytdSales.toLocaleString()}</div>
-            <div className="metric-label">All Subregions</div>
+            <div className="metric-label">All Subregions Combined</div>
             <div className="metric-trend">
-              <FaChartLine className="trend-icon" />
-              <span>Current Year</span>
+              <span>Since {format(startOfYear(new Date()), 'MMM d')}</span>
             </div>
           </div>
         </div>
@@ -85,11 +106,11 @@ export const DashboardPage = () => {
           onClick={() => navigate('/sales')}
         >
           <div className="card-content">
-            <h3>Monthly Sales</h3>
-            <div className="metric-value">${currentMonthSales.toLocaleString()}</div>
-            <div className="metric-label">
-              {format(new Date(), 'MMMM yyyy')}
+            <div className="card-header">
+              <FaDollarSign className="card-icon" />
+              <h3>{currentMonth} Sales</h3>
             </div>
+            <div className="metric-value">${currentMonthSales.toLocaleString()}</div>
             <div className={`metric-trend ${momGrowth >= 0 ? 'positive' : 'negative'}`}>
               <FaChartLine className="trend-icon" />
               <span>
