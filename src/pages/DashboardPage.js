@@ -63,7 +63,7 @@ export const DashboardPage = () => {
           <div className="card-content">
             <div className="card-header">
               <FaUsers className="card-icon" />
-              <h3>Business Overview</h3>
+              <h3>Growmate Mt Kenya </h3>
             </div>
             <div className="metrics-grid">
               <div className="metric-item">
