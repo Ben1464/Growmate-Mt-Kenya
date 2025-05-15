@@ -1,5 +1,5 @@
-import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { DashboardPage } from './pages/DashboardPage';
 import { CustomersPage } from './pages/CustomersPage';
 import { SubregionsPage } from './pages/SubregionsPage';
 import { SalesPage } from './pages/SalesPage';
@@ -13,7 +13,8 @@ function App() {
       <div className="app-container">
         <div className="app-content">
           <Routes>
-            <Route path="/" element={<CustomersPage />} />
+            <Route path="/" element={<DashboardPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/customers" element={<CustomersPage />} />
             <Route path="/subregions" element={<SubregionsPage />} />
             <Route path="/sales" element={<SalesPage />} />
